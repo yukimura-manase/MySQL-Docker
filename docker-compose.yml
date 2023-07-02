@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  # MySQL_DB_Container
+  mysql-db:
+    image: mysql:8
+    container_name: mysql
+    restart: always
+    # MySQL の環境変数： .envファイルで設定した環境変数が、ここに展開される
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      TZ: ${TZ}
+    ports:
+      - ${DB_PORT}:3306
+    # Dataを永続化するために、Volume_Mountする
+    volumes:
+      - mysql-db-store:/var/lib/mysql
+      - ./conf/my.cnf:/etc/mysql/conf.d/my.cnf
+    # .env ファイルを読み込むように設定する
+    env_file:
+      - .env
+volumes:
+  mysql-db-store:
